@@ -19,7 +19,12 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping({"", "/"}) // products 또는 /products/ 둘 다 매핑
-    public String viewHomePage(Model model) {
+    public String viewHomePage(Model model, @RequestParam(value = "success", required = false) Boolean success,
+                               @RequestParam(value = "email", required = false) String email) {
+
+        if (Boolean.TRUE.equals(success) && email != null) {
+            model.addAttribute("welcomeMessage", email + "님, 환영합니다!");
+        }
 
         List<Product> listProducts = service.listAll();
         model.addAttribute("listProducts", listProducts);

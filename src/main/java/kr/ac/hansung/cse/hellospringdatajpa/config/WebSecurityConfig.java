@@ -1,5 +1,7 @@
 package kr.ac.hansung.cse.hellospringdatajpa.config;
 
+import kr.ac.hansung.cse.hellospringdatajpa.security.FailureHandler;
+import kr.ac.hansung.cse.hellospringdatajpa.security.SuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,13 @@ public class WebSecurityConfig {
 
     @Autowired
     private UserDetailsService customUserDetailsService;
+
+    @Autowired
+    private SuccessHandler successHandler;
+
+    @Autowired
+    private FailureHandler failureHandler;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,9 +58,10 @@ public class WebSecurityConfig {
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
+                        .loginProcessingUrl("/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/products", true)
-                        .failureUrl("/login?error")
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
